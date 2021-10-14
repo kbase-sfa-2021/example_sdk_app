@@ -63,5 +63,14 @@ class example_kb_sdk_appTest(unittest.TestCase):
         #
         # Check returned data with
         # self.assertEqual(ret[...], ...) or other unittest methods
-        ret = self.serviceImpl.run_example_kb_sdk_app(self.ctx, {'workspace_name': self.wsName,
-                                                             'parameter_1': 'Hello World!'})
+        ret = self.serviceImpl.run_example_kb_sdk_app(
+            self.ctx, {
+                'workspace_name': self.wsName,
+                 'param_1': 'Hello World!',
+                 'param_2': [1, 2, 3],
+                 'param_3': {'hello': 'world'},
+                 'param_4': 50,
+            })
+        # next steps:
+        # - download report
+        # - assert that the report has expected contents
