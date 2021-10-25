@@ -4,7 +4,8 @@ import logging
 import os
 
 from installed_clients.KBaseReportClient import KBaseReport
-from .core import Core
+
+from base import Core
 
 
 #END_HEADER
@@ -54,7 +55,12 @@ class example_kb_sdk_app:
         # return variables are: output
         #BEGIN run_example_kb_sdk_app
 
-        config = dict(callback_url=self.callback_url)
+        config = dict(
+            callback_url=self.callback_url,
+            clients=dict(
+                KBaseReport=KBaseReport,
+            ),
+        )
         core = Core(ctx, config)
         output = core.do_analysis(params)
 

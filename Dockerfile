@@ -14,6 +14,8 @@ MAINTAINER KBase Developer
 COPY ./ /kb/module
 RUN mkdir -p /kb/module/work
 RUN chmod -R a+rw /kb/module
+RUN pip install --upgrade pip
+RUN pip install -e git+https://github.com/kbase-sfa-2021/sfa.git#egg=base
 
 WORKDIR /kb/module
 
