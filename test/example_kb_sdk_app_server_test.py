@@ -70,6 +70,7 @@ class example_kb_sdk_appTest(unittest.TestCase):
                  'param_2': [1, 2, 3],
                  'param_3': {'hello': 'world'},
                  'param_4': 50,
+                 'reads_refs' : '58783/4/1'
             })
         # next steps:
         # - download report

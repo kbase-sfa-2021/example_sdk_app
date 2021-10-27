@@ -4,7 +4,8 @@ import logging
 import os
 
 from installed_clients.KBaseReportClient import KBaseReport
-
+from installed_clients.ReadsUtilsClient import ReadsUtils
+from .utils import ExampleReadsApp
 from base import Core
 
 
@@ -59,10 +60,16 @@ class example_kb_sdk_app:
             callback_url=self.callback_url,
             clients=dict(
                 KBaseReport=KBaseReport,
+                ReadsUtils=ReadsUtils
             ),
         )
-        core = Core(ctx, config)
-        output = core.do_analysis(params)
+        # Download Reads
+
+        #
+        from .utils import ExampleAppClients
+        # core = Core(ctx, config, clients_class=ExampleAppClients)
+        era = ExampleReadsApp(ctx, config=config, clients_class=ExampleAppClients)
+        output = era.do_analysis(params)
 
         #END run_example_kb_sdk_app
 
