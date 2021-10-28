@@ -11,7 +11,7 @@ MAINTAINER KBase Developer
 
 # -----------------------------------------
 RUN pip install --upgrade pip
-RUN pip install -e git+https://github.com/kbase-sfa-2021/sfa.git@rev2#egg=base
+RUN pip install -e git+https://github.com/kbase-sfa-2021/sfa.git#egg=base
 
 COPY ./ /kb/module
 RUN mkdir -p /kb/module/work

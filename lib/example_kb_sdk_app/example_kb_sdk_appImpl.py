@@ -58,6 +58,7 @@ class example_kb_sdk_app:
 
         config = dict(
             callback_url=self.callback_url,
+            shared_folder=self.shared_folder,
             clients=dict(
                 KBaseReport=KBaseReport,
                 ReadsUtils=ReadsUtils
@@ -65,10 +66,8 @@ class example_kb_sdk_app:
         )
         # Download Reads
 
-        #
-        from .utils import ExampleAppClients
         # core = Core(ctx, config, clients_class=ExampleAppClients)
-        era = ExampleReadsApp(ctx, config=config, clients_class=ExampleAppClients)
+        era = ExampleReadsApp(ctx, config=config)
         output = era.do_analysis(params)
 
         #END run_example_kb_sdk_app

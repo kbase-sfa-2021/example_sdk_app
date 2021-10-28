@@ -1,10 +1,11 @@
+import logging
+import os
+
+from shutil import copyfile
+
+from Bio import SeqIO
+
 from base import Core
-
-
-class ExampleAppClients:
-    def __init__(self, callback_url, clients):
-        self.KBaseReport = clients["KBaseReport"](callback_url)
-        self.ReadsUtils = clients["ReadsUtils"](callback_url)
 
 
 class ExampleReadsApp(Core):
@@ -16,8 +17,23 @@ class ExampleReadsApp(Core):
 
     def do_analysis(self, params:dict):
         read_refs = params['reads_refs']
-        return self.download_reads(read_refs)
-
+        ret = self.download_reads(read_refs)
+        for file_ref, file_info in ret['files'].items():
+            file_path = file_info['files']['fwd']
+            basename = os.path.basename(file_path)
+            with open(file_path) as reads:
+                record_iter = SeqIO.parse(reads, "fastq")
+                limit = 10
+                head = []
+                for ix, record in enumerate(record_iter):
+                    if ix >= limit:
+                        break
+                    head.append(record)
+                filename = f"{basename}.head.fastq"
+                out_path = os.path.join(self.shared_folder, filename)
+                with open(out_path, "w") as out_reads:
+                    SeqIO.write(head, out_reads, "fastq")
+        return dict()
 
 
     def download_reads(self, reads_refs, interleaved=False):
@@ -27,29 +43,4 @@ class ExampleReadsApp(Core):
         """
 
         dr_params = {'read_libraries': [reads_refs], 'interleaved': None}
-        ret = self.ru.download_reads(dr_params)
-        from pprint import pprint
-        pprint(ret)
-        return ret
-        # read_file_list = list()
-        # for file in ret['files']:
-        #     obj_info = self.dfu.get_objects({'object_refs': [file]})['data'][0]['info']
-        #     obj_name = obj_info[1]
-        #     obj_ref_suffix = '_' + str(obj_info[6]) + '_' + str(obj_info[0]) + '_' + str(obj_info[4])
-        #
-        #     files = ret['files'][file]['files']
-        #
-        #     fwd_name = files['fwd'].split('/')[-1]
-        #     fwd_name = fwd_name.replace('.gz', '')
-        #     # using object_name + ref_suffix + suffix as file name
-        #     fwd_name = obj_name + obj_ref_suffix + '.' + fwd_name.split('.', 1)[-1]
-        #     shutil.move(files['fwd'], os.path.join(read_file_path, fwd_name))
-        #     read_file_list.append(os.path.join(read_file_path, fwd_name))
-        #
-        #     if (files['rev'] is not None):
-        #         rev_name = files['rev'].split('/')[-1]
-        #         rev_name = rev_name.replace('.gz', '')
-        #         rev_name = obj_name + obj_ref_suffix + '.' + rev_name.split('.', 1)[-1]
-        #         shutil.move(files['rev'], os.path.join(read_file_path, rev_name))
-        #         read_file_list.append(os.path.join(read_file_path, rev_name))(obj_info[0]) + '_' + str(obj_info[4])
-        #         info[0]) + '_' + str(obj_info[4])
+        return self.ru.download_reads(dr_params)
