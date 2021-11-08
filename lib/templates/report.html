@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+ <body>
+  <h1>Example tabular data</h1>
+  <table>
+  {% for row in table %}
+  {% if loop.first %}
+   <tr>
+   {% for header in headers %}
+    <th>{{ header }}</th>
+   {% endfor %}
+   </tr>
+  {% endif %}
+   <tr>
+   {% for cell in row %}
+    <td>{{ cell }}</td>
+   {% endfor %}
+   </tr>
+  {% endfor %}
+  </table>
+  <hr />
+  <h1>DataFrame of base call counts</h1>
+  {{ count_df_html }}
+  <h1>Correlations in qualities by index of base call within a read</h1>
+  {{ scores_df_html }}
+ </body>
+</html>

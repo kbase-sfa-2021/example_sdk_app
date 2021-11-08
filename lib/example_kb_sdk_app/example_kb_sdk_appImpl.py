@@ -66,7 +66,6 @@ class example_kb_sdk_app:
         )
         # Download Reads
 
-        # core = Core(ctx, config, clients_class=ExampleAppClients)
         era = ExampleReadsApp(ctx, config=config)
         output = era.do_analysis(params)
 
