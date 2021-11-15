@@ -16,7 +16,6 @@ from Bio import SeqIO
 # This is the SFA base package which provides the Core app class.
 from base import Core
 
-
 MODULE_DIR = "/kb/module"
 TEMPLATES_DIR = os.path.join(MODULE_DIR, "lib/templates")
 
@@ -32,6 +31,7 @@ class ExampleReadsApp(Core):
         self.report = self.clients.KBaseReport
         self.ru = self.clients.ReadsUtils
         # self.shared_folder is defined in the Core App class.
+        # TODO Add a self.wsid = a conversion of self.wsname
 
     def do_analysis(self, params: dict):
         """
@@ -65,11 +65,25 @@ class ExampleReadsApp(Core):
         count_df = pd.DataFrame(
             sorted(counts.items()), columns=["base", "count"]
         )
+
+        # Upload the first 10 reads back to kbase as an object
+        upa = self.upload_reads(reads_path=out_path, wsname=params["workspace_name"])
+
         # Pass new data to generate the report.
         params["count_df"] = count_df
         params["scores"] = scores
-        # This is the method that generates the HTML report.
+        params["upa"] = upa  # Not currently used, but the ID of the uploaded reads
+        # This is the method that generates the HTML report
         return self.generate_report(params)
+
+    def upload_reads(self, reads_path, wsname):
+        """
+        Upload reads back to the KBase Workspace
+        param: filepath_to_reads - A filepath to a fastq fastq file to upload reads from
+        param: wsname - The name of the workspace to upload to
+        """
+        ur_params = {"fwd_file": reads_path, "wsname": wsname}
+        return self.ru.upload_reads(ur_params)
 
     def download_reads(self, reads_refs, interleaved=False):
         """
@@ -102,9 +116,9 @@ class ExampleReadsApp(Core):
         # runing kb-sdk test in ./test_local/workdir/tmp/reports/index.html
         scores_df_html = (
             pd.DataFrame(params["scores"])
-            .corr()
-            .style.background_gradient()
-            .render()
+                .corr()
+                .style.background_gradient()
+                .render()
         )
         # The keys in this dictionary will be available as variables in the
         # Jinja template. With the current configuration of the template
@@ -114,6 +128,7 @@ class ExampleReadsApp(Core):
             headers=headers,
             scores_df_html=scores_df_html,
             table=table,
+            upa=params["upa"]
         )
         # The KBaseReport configuration dictionary
         config = dict(
