@@ -2,8 +2,10 @@
 This ExampleReadsApp demonstrates how to use best practices for KBase App
 development using the SFA base package.
 """
+import io
 import logging
 import os
+import subprocess
 import uuid
 
 from collections import Counter
@@ -62,11 +64,29 @@ class ExampleReadsApp(Core):
                 out_path = os.path.join(self.shared_folder, filename)
                 with open(out_path, "w") as out_reads:
                     SeqIO.write(head, out_reads, "fastq")
+        def log(pipe):
+            """This helper function manages logging directly from subprocess
+                output.
+            """
+            for line in iter(pipe.readline, ''):
+                logging.info(line)
+        # Run a subprocess script that will generate some random data.
+        process = subprocess.Popen(
+            ["/kb/module/scripts/random_logger.py"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT
+        )
+        output, error = process.communicate()
+        output_decoded = output.decode('utf-8', "ignore")
+        log(io.StringIO(output_decoded))
+        output_lines = output_decoded.split("\n")
+        output_value = output_lines[-2].split(" ")[-2]
         count_df = pd.DataFrame(
             sorted(counts.items()), columns=["base", "count"]
         )
         # Pass new data to generate the report.
         params["count_df"] = count_df
+        params["output_value"] = output_value
         params["scores"] = scores
         # This is the method that generates the HTML report.
         return self.generate_report(params)
@@ -114,6 +134,7 @@ class ExampleReadsApp(Core):
             headers=headers,
             scores_df_html=scores_df_html,
             table=table,
+            output_value=params["output_value"],
         )
         # The KBaseReport configuration dictionary
         config = dict(
