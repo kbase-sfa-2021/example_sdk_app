@@ -64,33 +64,51 @@ class ExampleReadsApp(Core):
                 out_path = os.path.join(self.shared_folder, filename)
                 with open(out_path, "w") as out_reads:
                     SeqIO.write(head, out_reads, "fastq")
-        def log(pipe):
-            """This helper function manages logging directly from subprocess
-                output.
+
+
+
+        def kb_logger(process):
             """
-            for line in iter(pipe.readline, ''):
-                logging.info(line)
-        # Run a subprocess script that will generate some random data.
+            Prints stdout and stderr
+            Returns decoded stdout
+            """
+
+            output = []
+
+            while process.poll() is None:
+                stdout = process.stdout
+                stderr = process.stderr
+                for line in iter(stdout.readline, b''):
+                    line_decoded = line.decode('utf-8', 'ignore')
+                    output.append(line_decoded)
+                    logging.info(line_decoded)
+
+                for line in iter(stderr.readline, b''):
+                    line_decoded = line.decode('utf-8', 'ignore')
+                    logging.error(line_decoded)
+
+            return output
+
+
+
         process = subprocess.Popen(
             ["/kb/module/scripts/random_logger.py"],
             stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT
+            stderr=subprocess.PIPE
         )
-        output, error = process.communicate()
-        output_decoded = output.decode('utf-8', "ignore")
-        log(io.StringIO(output_decoded))
-        output_lines = output_decoded.split("\n")
-        output_value = output_lines[-2].split(" ")[-2]
-        count_df = pd.DataFrame(
-            sorted(counts.items()), columns=["base", "count"]
-        )
+        output_decoded = kb_logger(process)
+        # output_lines = output_decoded
+        # output_value = output_lines[-2].split(" ")[-2]
+        # count_df = pd.DataFrame(
+        #     sorted(counts.items()), columns=["base", "count"]
+        # )
 
         # Upload the first 10 reads back to kbase as an object
         upa = self.upload_reads(reads_path=out_path, wsname=params["workspace_name"])
 
         # Pass new data to generate the report.
-        params["count_df"] = count_df
-        params["output_value"] = output_value
+        params["count_df"] = "abc"
+        params["output_value"] = "123"
         params["scores"] = scores
         params["upa"] = upa  # Not currently used, but the ID of the uploaded reads
         # This is the method that generates the HTML report
