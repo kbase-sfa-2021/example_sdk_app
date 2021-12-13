@@ -65,30 +65,12 @@ class ExampleReadsApp(Core):
                 with open(out_path, "w") as out_reads:
                     SeqIO.write(head, out_reads, "fastq")
 
-
-
-        def kb_logger(process):
+        def get_streams(process):
             """
-            Prints stdout and stderr
-            Returns decoded stdout
+            Returns decoded stdout,stderr after loading the entire thing into memory
             """
-
-            output = []
-
-            while process.poll() is None:
-                stdout = process.stdout
-                stderr = process.stderr
-                for line in iter(stdout.readline, b''):
-                    line_decoded = line.decode('utf-8', 'ignore')
-                    output.append(line_decoded)
-                    logging.info(line_decoded)
-
-                for line in iter(stderr.readline, b''):
-                    line_decoded = line.decode('utf-8', 'ignore')
-                    logging.error(line_decoded)
-
-            return output
-
+            stdout, stderr = process.communicate()
+            return (stdout.decode('utf-8', 'ignore'), stderr.decode('utf-8', 'ignore'))
 
 
         process = subprocess.Popen(
@@ -96,19 +78,19 @@ class ExampleReadsApp(Core):
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
         )
-        output_decoded = kb_logger(process)
-        # output_lines = output_decoded
-        # output_value = output_lines[-2].split(" ")[-2]
-        # count_df = pd.DataFrame(
-        #     sorted(counts.items()), columns=["base", "count"]
-        # )
+
+        stdout, stderr = get_streams(process)
+        output_value = stdout.split("\n")[0].split(" ")[-2]
+        count_df = pd.DataFrame(
+            sorted(counts.items()), columns=["base", "count"]
+        )
 
         # Upload the first 10 reads back to kbase as an object
         upa = self.upload_reads(reads_path=out_path, wsname=params["workspace_name"])
 
         # Pass new data to generate the report.
-        params["count_df"] = "abc"
-        params["output_value"] = "123"
+        params["count_df"] = count_df
+        params["output_value"] = output_value
         params["scores"] = scores
         params["upa"] = upa  # Not currently used, but the ID of the uploaded reads
         # This is the method that generates the HTML report
