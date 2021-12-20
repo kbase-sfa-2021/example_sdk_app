@@ -65,28 +65,29 @@ class ExampleReadsApp(Core):
                 with open(out_path, "w") as out_reads:
                     SeqIO.write(head, out_reads, "fastq")
 
-        def get_streams(process):
-            """
-            Returns decoded stdout,stderr after loading the entire thing into memory
-            """
-            stdout, stderr = process.communicate()
-            return (stdout.decode('utf-8', 'ignore'), stderr.decode('utf-8', 'ignore'))
-
-
+        # This method runs the process first and then returns the stdout and
+        # stderr all at once, so take care if your process produces a large
+        # amount of output.
         process = subprocess.Popen(
             ["/kb/module/scripts/random_logger.py"],
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
+            stderr=subprocess.PIPE,
         )
 
-        stdout, stderr = get_streams(process)
+        stdout, stderr = self.get_streams(process)
+        # We are logging everything because the script we are running does not
+        # have a lot of output, but if what you run does then you might not
+        # want to log *everything* to the user.
+        logging.info(stdout)
+        if stderr:
+            logging.warning(stderr)
         output_value = stdout.split("\n")[0].split(" ")[-2]
-        count_df = pd.DataFrame(
-            sorted(counts.items()), columns=["base", "count"]
-        )
+        count_df = pd.DataFrame(sorted(counts.items()), columns=["base", "count"])
 
         # Upload the first 10 reads back to kbase as an object
-        upa = self.upload_reads(reads_path=out_path, wsname=params["workspace_name"])
+        upa = self.upload_reads(
+            name=params["name"], reads_path=out_path, wsname=params["workspace_name"]
+        )
 
         # Pass new data to generate the report.
         params["count_df"] = count_df
@@ -96,13 +97,30 @@ class ExampleReadsApp(Core):
         # This is the method that generates the HTML report
         return self.generate_report(params)
 
-    def upload_reads(self, reads_path, wsname):
+    @staticmethod
+    def get_streams(process):
         """
-        Upload reads back to the KBase Workspace
+        Returns decoded stdout,stderr after loading the entire thing into memory
+        """
+        stdout, stderr = process.communicate()
+        return (stdout.decode("utf-8", "ignore"), stderr.decode("utf-8", "ignore"))
+
+    def upload_reads(self, name, reads_path, wsname):
+        """
+        Upload reads back to the KBase Workspace. This method only uses the
+        minimal parameters necessary to provide a demonstration. There are many
+        more parameters which reads can provide, for example, interleaved, etc.
         param: filepath_to_reads - A filepath to a fastq fastq file to upload reads from
         param: wsname - The name of the workspace to upload to
         """
-        ur_params = {"fwd_file": reads_path, "wsname": wsname}
+        ur_params = {
+            "fwd_file": reads_path,
+            "name": name,
+            "sequencing_tech": "Illumina",
+            "wsname": wsname,
+        }
+        # It is often useful to log parameters as they are passed.
+        logging.warning(f">>>>>>>>>>>>>>>>>>>>{ur_params}")
         return self.ru.upload_reads(ur_params)
 
     def download_reads(self, reads_refs, interleaved=False):
@@ -135,10 +153,7 @@ class ExampleReadsApp(Core):
         # listed in requirements.txt. You can see the resulting HTML file after
         # runing kb-sdk test in ./test_local/workdir/tmp/reports/index.html
         scores_df_html = (
-            pd.DataFrame(params["scores"])
-                .corr()
-                .style.background_gradient()
-                .render()
+            pd.DataFrame(params["scores"]).corr().style.background_gradient().render()
         )
         # The keys in this dictionary will be available as variables in the
         # Jinja template. With the current configuration of the template
