@@ -12,5 +12,4 @@ jobs:
         run: |
           echo "Building docker image and running unit tests"
           make docker-build
-          make docker-unit
-
+          bash -c "make docker-unit"
