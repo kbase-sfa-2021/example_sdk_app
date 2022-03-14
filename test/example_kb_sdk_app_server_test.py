@@ -58,6 +58,7 @@ class example_kb_sdk_appTest(unittest.TestCase):
             print("Test workspace was deleted")
 
     # NOTE: According to Python unittest naming rules test method names should start from 'test'. # noqa
+    # @unittest.skip("Skip test for debugging")
     def test_your_method(self):
         # Prepare test objects in workspace if needed using
         # self.getWsClient().save_objects({'workspace': self.getWsName(),

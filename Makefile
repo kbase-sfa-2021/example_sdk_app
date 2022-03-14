@@ -54,16 +54,23 @@ build-test-script:
 	echo 'echo "...done removing temp files."' >> $(TEST_DIR)/$(TEST_SCRIPT_NAME)
 	echo 'export PYTHONPATH=$$script_dir/../$(LIB_DIR):$$PATH:$$PYTHONPATH' >> $(TEST_DIR)/$(TEST_SCRIPT_NAME)
 	echo 'cd $$script_dir/../$(TEST_DIR)' >> $(TEST_DIR)/$(TEST_SCRIPT_NAME)
-	echo 'python -m nose --with-coverage --cover-package=$(SERVICE_CAPS) --cover-html --cover-html-dir=/kb/module/work/test_coverage --nocapture  --nologcapture .' >> $(TEST_DIR)/$(TEST_SCRIPT_NAME)
+	echo 'python -m pytest .' >> $(TEST_DIR)/$(TEST_SCRIPT_NAME)
 	chmod +x $(TEST_DIR)/$(TEST_SCRIPT_NAME)
+
+docker-build:
+	docker build --tag test/$(SERVICE):latest .
+
+docker-unit:
+	docker run -i -t -v $(DIR):/kb/dev -v $(DIR)/test_local/workdir:/kb/module/work \
+	--entrypoint "/bin/bash" test/$(SERVICE):latest \
+	-c "cd /kb/dev; make unit-tests"
 
 test:
 	if [ ! -f /kb/module/work/token ]; then echo -e '\nOutside a docker container please run "kb-sdk test" rather than "make test"\n' && exit 1; fi
 	bash $(TEST_DIR)/$(TEST_SCRIPT_NAME)
 
-unit-test:
-	pytest test
-
+unit-tests:
+	PYTHONPATH=.:lib:test:$(PYTHONPATH) pytest test/unit_tests
 
 clean:
 	rm -rfv $(LBIN_DIR)
