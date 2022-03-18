@@ -1,8 +1,9 @@
 # example_kb_sdk_app
 
-This repo demonstrates some best practices for writing KBase Apps
+This repo demonstrates some best practices for writing KBase Apps, as well as providing a simple app that demonstrates
+uploading data into kbase, using kbase utilities, using an external script, and using biopython to do simple calculations within the app.
 
-We aim to demonstrate various practicies, such as
+We also aim to demonstrate various practicies, such as
 
 ### Organization
 * Code is organized inside helper classes outside of the impl file. We avoid writing most code in the impl file
@@ -18,6 +19,7 @@ We aim to demonstrate various practicies, such as
 ### Experimental Features
 * Usage of KBase Template
 * New Base Image
+* Updated Makefile to enable testing with `pytest` instead of the deprecated `nose`
 
 
 
