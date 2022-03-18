@@ -64,6 +64,14 @@ docker-unit:
 	docker run -i -t -v $(DIR):/kb/dev -v $(DIR)/test_local/workdir:/kb/module/work \
 	--entrypoint "/bin/bash" test/$(SERVICE):latest \
 	-c "cd /kb/dev; make unit-tests"
+	
+
+docker-unit-gha:
+	# Same as docker-unit, but for github actions lack of TTY
+	docker run -v $(DIR):/kb/dev -v $(DIR)/test_local/workdir:/kb/module/work \
+	--entrypoint "/bin/bash" test/$(SERVICE):latest \
+	-c "cd /kb/dev; make unit-tests"
+
 
 test:
 	if [ ! -f /kb/module/work/token ]; then echo -e '\nOutside a docker container please run "kb-sdk test" rather than "make test"\n' && exit 1; fi

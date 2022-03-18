@@ -19,6 +19,7 @@ To run the unit tests for this app ensure the image is built by running
 ```
 make docker-unit
 ```
+NOTE: Tests are automatically run via github actions, so you can check to see if your PR passes tests on github
 
 ## KB SDK
 
