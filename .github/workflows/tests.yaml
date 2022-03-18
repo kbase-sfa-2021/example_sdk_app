@@ -14,5 +14,16 @@ jobs:
         run: |
           echo "Building docker image and running unit tests"
           make docker-build
-          make docker-unit
+          make docker-unit        
+  sdk_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v2
+      - name: Run tests
+        shell: bash
+        run: |
+          docker pull kbase/kb-sdk
+          kb-sdk test
+
 
