@@ -1,5 +1,25 @@
 # example_kb_sdk_app
 
+This repo demonstrates some best practices for writing KBase Apps
+
+We aim to demonstrate various practicies, such as
+
+# Organization
+* Code is organized inside helper classes outside of the impl file. We avoid writing most code in the impl file
+* Dependency injection
+
+# Testing
+* Unit tests
+* Tests running in github actions. (See the [.github](.github) directory)
+
+# Logging
+* Use of the logger instead of prints
+
+# Experimental Features
+* Usage of KBase Template
+* New Base Image
+
+
 
 ## TODO
 
