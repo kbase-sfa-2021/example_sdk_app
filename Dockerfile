@@ -12,6 +12,7 @@ MAINTAINER KBase Developer
 # -----------------------------------------
 WORKDIR /kb/module
 COPY ./requirements.txt /kb/module/requirements.txt
+ENV PIP_PROGRESS_BAR=off
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 RUN pip install -e git+https://github.com/kbase-sfa-2021/sfa.git#egg=base

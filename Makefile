@@ -54,7 +54,8 @@ build-test-script:
 	echo 'echo "...done removing temp files."' >> $(TEST_DIR)/$(TEST_SCRIPT_NAME)
 	echo 'export PYTHONPATH=$$script_dir/../$(LIB_DIR):$$PATH:$$PYTHONPATH' >> $(TEST_DIR)/$(TEST_SCRIPT_NAME)
 	echo 'cd $$script_dir/../$(TEST_DIR)' >> $(TEST_DIR)/$(TEST_SCRIPT_NAME)
-	echo 'python -m pytest .' >> $(TEST_DIR)/$(TEST_SCRIPT_NAME)
+	echo 'echo $$PWD' >> $(TEST_DIR)/$(TEST_SCRIPT_NAME)
+	echo 'python -m pytest --cov-report=term-missing --cov-report=xml --cov ../lib/$(SERVICE) --verbose' >> $(TEST_DIR)/$(TEST_SCRIPT_NAME)
 	chmod +x $(TEST_DIR)/$(TEST_SCRIPT_NAME)
 
 docker-build:
@@ -64,7 +65,7 @@ docker-unit:
 	docker run -i -t -v $(DIR):/kb/dev -v $(DIR)/test_local/workdir:/kb/module/work \
 	--entrypoint "/bin/bash" test/$(SERVICE):latest \
 	-c "cd /kb/dev; make unit-tests"
-	
+
 
 docker-unit-gha:
 	# Same as docker-unit, but for github actions lack of TTY
@@ -78,7 +79,7 @@ test:
 	bash $(TEST_DIR)/$(TEST_SCRIPT_NAME)
 
 unit-tests:
-	PYTHONPATH=.:lib:test:$(PYTHONPATH) pytest test/unit_tests
+	PYTHONPATH=.:lib:test:$(PYTHONPATH) pytest test/unit_tests --cov lib/$(SERVICE)/ --verbose
 
 clean:
 	rm -rfv $(LBIN_DIR)
