@@ -1,5 +1,27 @@
 # example_kb_sdk_app
 
+This repo demonstrates some best practices for writing KBase Apps, as well as providing a simple app that demonstrates
+uploading data into kbase, using kbase utilities, using an external script, and using biopython to do simple calculations within the app.
+
+We also aim to demonstrate various practicies, such as
+
+### Organization
+* Code is organized inside helper classes outside of the impl file. We avoid writing most code in the impl file
+* Dependency injection
+
+### Testing
+* Unit tests
+* Tests running in github actions. (See the [.github](.github) directory)
+
+### Logging
+* Use of the logger instead of prints
+
+### Experimental Features
+* Usage of KBase Template
+* New Base Image
+* Updated Makefile to enable testing with `pytest` instead of the deprecated `nose`
+
+
 
 ## TODO
 
@@ -19,6 +41,7 @@ To run the unit tests for this app ensure the image is built by running
 ```
 make docker-unit
 ```
+NOTE: Tests are automatically run via github actions, so you can check to see if your PR passes tests on github
 
 ## KB SDK
 
