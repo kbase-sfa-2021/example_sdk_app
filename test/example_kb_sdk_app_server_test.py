@@ -73,12 +73,8 @@ class example_kb_sdk_appTest(unittest.TestCase):
             self.ctx,
             {
                 "workspace_name": self.wsName,
-                "param_1": "Hello World!",
-                "param_2": [1, 2, 3],
-                "param_3": {"hello": "world"},
-                "param_4": 50,
-                "reads_refs": "58783/4/1",
-                "name": "ReadsOutputName",
+                "reads_ref": "58783/4/1",
+                "output_name": "ReadsOutputName",
             },
         )
         # next steps:

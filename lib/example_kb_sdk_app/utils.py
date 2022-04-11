@@ -39,7 +39,7 @@ class ExampleReadsApp(Core):
         """
         This method is where the main computation will occur.
         """
-        read_refs = params["reads_refs"]
+        read_refs = params["reads_ref"]
         # Download the reads from KBase
         ret = self.download_reads(read_refs)
         # We use these downloaded reads and biopython to collect the first 10
@@ -86,7 +86,7 @@ class ExampleReadsApp(Core):
 
         # Upload the first 10 reads back to kbase as an object
         upa = self.upload_reads(
-            name=params["name"], reads_path=out_path, wsname=params["workspace_name"]
+            name=params["output_name"], reads_path=out_path, wsname=params["workspace_name"]
         )
 
         # Pass new data to generate the report.
@@ -110,6 +110,9 @@ class ExampleReadsApp(Core):
         Upload reads back to the KBase Workspace. This method only uses the
         minimal parameters necessary to provide a demonstration. There are many
         more parameters which reads can provide, for example, interleaved, etc.
+        By default, non-interleaved objects and those uploaded without a
+        reverse file are saved as KBaseFile.SingleEndLibrary. See:
+        https://github.com/kbaseapps/ReadsUtils/blob/master/lib/ReadsUtils/ReadsUtilsImpl.py#L115-L119
         param: filepath_to_reads - A filepath to a fastq fastq file to upload reads from
         param: wsname - The name of the workspace to upload to
         """
@@ -123,12 +126,12 @@ class ExampleReadsApp(Core):
         logging.warning(f">>>>>>>>>>>>>>>>>>>>{ur_params}")
         return self.ru.upload_reads(ur_params)
 
-    def download_reads(self, reads_refs, interleaved=False):
+    def download_reads(self, reads_ref, interleaved=False):
         """
         Download a list of reads objects
-        param: reads_refs - A list of reads references/upas
+        param: reads_ref - A list of reads references/upas
         """
-        dr_params = {"read_libraries": [reads_refs], "interleaved": None}
+        dr_params = {"read_libraries": [reads_ref], "interleaved": None}
         # This uses the ReadsUtils client to download a specific workspace
         # object, saving it into the shared_folder and making it available to
         # the user.
