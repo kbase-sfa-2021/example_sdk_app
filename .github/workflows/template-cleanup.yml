@@ -1,0 +1,34 @@
+# GitHub Actions Workflow responsible for cleaning up a new KBase module.
+# Based on a similar workflow in JetBrains/intellij-platform-plugin-template.
+
+name: Template Cleanup
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  # Run cleaning process only if workflow is triggered by a new project
+  template-cleanup:
+    name: Template Cleanup
+    runs-on: ubuntu-latest
+    if: github.event.repository.name != 'example_sdk_app'
+    steps:
+
+      # Check out current repository
+      - name: Fetch Sources
+        uses: actions/checkout@v2
+
+      # Cleanup project
+      - name: Cleanup
+        run: |
+          bash scripts/rename.sh
+          rm .github/workflows/template-cleanup.yml
+
+      # Push changes
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          branch: main
+          github_token: ${{ secrets.GITHUB_TOKEN }}
