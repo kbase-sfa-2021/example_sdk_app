@@ -54,7 +54,7 @@ git config user.name "KBase"
 git rm -- "$0"
 
 git commit --message="Renaming example module to ${name}."
-if [ -z "$OLD_GIT_USER_EMAIL" ]; then
+if [ "$OLD_GIT_USER_EMAIL" ]; then
   git config user.email "$OLD_GIT_USER_EMAIL"
   git config user.name "$OLD_GIT_USER_NAME"
 fi
