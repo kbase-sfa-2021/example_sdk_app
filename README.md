@@ -1,7 +1,22 @@
 # example_kb_sdk_app
 
-This repo demonstrates some best practices for writing KBase Apps, as well as providing a simple app that demonstrates
-uploading data into kbase, using kbase utilities, using an external script, and using biopython to do simple calculations within the app.
+This repo demonstrates some best practices for writing KBase Apps, as well as
+providing a simple app that demonstrates uploading data into kbase, using kbase
+utilities, using an external script, and using biopython to do simple
+calculations within the app.
+
+## Quick start
+
+1. Make a new project using this repository as a template. *NOTE*: Do not use
+   `example_sdk_app` in the name.
+2. Wait for the github action to finish, see details below.
+3. Clone your repository locally. Be sure the name of the local directory is
+    the same as the repository name.
+4. Run `kb-sdk test`.
+5. Add your token to `test.cfg` and your repository secrets.
+6. Run `kb-sdk test`.
+
+## Philosophy
 
 We also aim to demonstrate various practicies, such as
 
@@ -21,7 +36,9 @@ We also aim to demonstrate various practicies, such as
 * New Base Image
 * Updated Makefile to enable testing with `pytest` instead of the deprecated `nose`
 
+## FAQ
 
+### How does the github action work?
 
 ## TODO
 
