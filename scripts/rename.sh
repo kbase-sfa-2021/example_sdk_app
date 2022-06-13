@@ -9,7 +9,7 @@ set -e
 set -x
 
 # TODO: Infer app name from directory.
-name=$(basename $(pwd))
+name=$(basename "$(pwd)")
 
 FILES=$(cat << HEREDOC
 Makefile
@@ -29,18 +29,18 @@ HEREDOC
 
 for file in $FILES
 do
-    sed -i'.bak' "s/example_kb_sdk_app/${name}/g" ${file}
+    sed -i'.bak' "s/example_kb_sdk_app/${name}/g" "${file}"
 done
 
 git add -u
 
-git mv example_kb_sdk_app.spec ${name}.spec
-git mv lib/example_kb_sdk_app/example_kb_sdk_appImpl.py lib/example_kb_sdk_app/${name}Impl.py
-git mv lib/example_kb_sdk_app/example_kb_sdk_appServer.py lib/example_kb_sdk_app/${name}Server.py
-git mv lib/example_kb_sdk_app lib/${name}
-git mv test/example_kb_sdk_app_server_test.py test/${name}_server_test.py
-git mv test/unit_tests/test_example_kb_sdk_app_utils.py test/unit_tests/test_${name}_utils.py
-git mv ui/narrative/methods/run_example_kb_sdk_app ui/narrative/methods/run_${name}
+git mv example_kb_sdk_app.spec "${name}".spec
+git mv lib/example_kb_sdk_app/example_kb_sdk_appImpl.py lib/example_kb_sdk_app/"${name}"Impl.py
+git mv lib/example_kb_sdk_app/example_kb_sdk_appServer.py lib/example_kb_sdk_app/"${name}"Server.py
+git mv lib/example_kb_sdk_app lib/"${name}"
+git mv test/example_kb_sdk_app_server_test.py test/"${name}"_server_test.py
+git mv test/unit_tests/test_example_kb_sdk_app_utils.py test/unit_tests/test_"${name}"_utils.py
+git mv ui/narrative/methods/run_example_kb_sdk_app ui/narrative/methods/run_"${name}"
 
 echo "# ${name}" > README.md
 
@@ -54,5 +54,7 @@ git config user.name "KBase"
 git rm -- "$0"
 
 git commit --message="Renaming example module to ${name}."
-git config user.email "$OLD_GIT_USER_EMAIL"
-git config user.name "$OLD_GIT_USER_NAME"
+if [ "$OLD_GIT_USER_EMAIL" ]; then
+  git config user.email "$OLD_GIT_USER_EMAIL"
+  git config user.name "$OLD_GIT_USER_NAME"
+fi
