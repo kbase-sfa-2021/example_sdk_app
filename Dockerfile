@@ -8,7 +8,6 @@ MAINTAINER KBase Developer
 
 # RUN apt-get update
 
-
 # -----------------------------------------
 WORKDIR /kb/module
 COPY ./requirements.txt /kb/module/requirements.txt
