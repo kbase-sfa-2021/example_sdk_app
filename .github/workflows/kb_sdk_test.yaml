@@ -1,6 +1,6 @@
 name: KBase SDK Tests
 
-on: [push, pull_request, fork, workflow_dispatch]
+on: [pull_request, fork, workflow_dispatch]
 
 jobs:
 
