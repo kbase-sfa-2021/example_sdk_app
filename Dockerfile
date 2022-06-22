@@ -1,4 +1,4 @@
-FROM ghcr.io/kbase/sdkpython:0.0.1
+FROM ghcr.io/kbase/sdkpython-develop:latest
 MAINTAINER KBase Developer
 # -----------------------------------------
 # In this section, you can install any system dependencies required
