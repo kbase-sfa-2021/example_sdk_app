@@ -45,8 +45,13 @@ git mv ui/narrative/methods/run_example_kb_sdk_app ui/narrative/methods/run_"${n
 echo "# ${name}" > README.md
 
 git add --update
-OLD_GIT_USER_EMAIL=$(git config --get user.email)
-OLD_GIT_USER_NAME=$(git config --get user.name)
+if [ "$(git config --get user.email)" ]; then
+    OLD_GIT_USER_EMAIL="$(git config --get user.email)"
+fi
+if [ "$(git config --get user.name)" ]; then
+    OLD_GIT_USER_NAME="$(git config --get user.name)"
+fi
+
 git config user.email "KBase@example.com"
 git config user.name "KBase"
 
