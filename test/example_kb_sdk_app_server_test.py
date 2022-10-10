@@ -6,8 +6,7 @@ from configparser import ConfigParser
 
 from example_kb_sdk_app.example_kb_sdk_appImpl import example_kb_sdk_app
 from example_kb_sdk_app.example_kb_sdk_appServer import MethodContext
-from example_kb_sdk_app.authclient import KBaseAuth as _KBaseAuth
-
+from installed_clients.authclient import KBaseAuth as _KBaseAuth
 from installed_clients.WorkspaceClient import Workspace
 
 
