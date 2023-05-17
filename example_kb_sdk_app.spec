@@ -12,5 +12,7 @@ module example_kb_sdk_app {
         This example function accepts any number of parameters and returns results in a KBaseReport
     */
     funcdef run_example_kb_sdk_app(mapping<string,UnspecifiedObject> params) returns (ReportResults output) authentication required;
+    
+    funcdef run_example_kb_sdk_app2(mapping<string,UnspecifiedObject> params) returns (ReportResults output) authentication required;
 
 };
