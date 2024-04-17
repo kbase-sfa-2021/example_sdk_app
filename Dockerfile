@@ -1,4 +1,4 @@
-FROM kbase/sdkpython:3.8.0
+FROM ghcr.io/kbase/sdkpython-develop:latest
 MAINTAINER KBase Developer
 # -----------------------------------------
 # In this section, you can install any system dependencies required
@@ -7,7 +7,6 @@ MAINTAINER KBase Developer
 # installation scripts.
 
 # RUN apt-get update
-
 
 # -----------------------------------------
 WORKDIR /kb/module
